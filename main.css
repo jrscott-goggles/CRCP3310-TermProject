@@ -1,5 +1,41 @@
 body {
-	background-color: #9999FF;
-	font-family: 'comic sans ms', sans-serif;
+  background: #fcfcfa;
+  background-color: #9999FF;
+  font-family: 'comic sans ms', sans-serif;
 }
-/* comment*/
+
+.stroke {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+}
+
+.fill {
+  fill: #fff;
+}
+
+.graticule {
+  fill: none;
+  stroke: #777;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+}
+
+.land {
+  fill: #222;
+}
+
+.boundary {
+  fill: none;
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+h1 {
+  position: absolute;
+  top: 500px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  text-align: center;
+  width: 960px;
+}

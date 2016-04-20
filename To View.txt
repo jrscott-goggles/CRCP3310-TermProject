@@ -1,0 +1,7 @@
+In the console:
+cd to the project directory
+run the following: python -m SimpleHTTPServer 8888 &
+this should start the webserver on the local machine
+
+In browser:
+go to: http://localhost:8888
