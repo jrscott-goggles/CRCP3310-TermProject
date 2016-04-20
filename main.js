@@ -36,7 +36,7 @@ function ready(error, world, names) {
       i = -1,
       n = countries.length;
 	  
-  globe.call(drag);
+ 
   /*var colors = [];
   var j;
   for (j = 0; j < n; j++) {
@@ -50,11 +50,7 @@ function ready(error, world, names) {
     });
   }).sort(function(a, b) {
     return a.name.localeCompare(b.name);
-  });
-  
-  selection.on(".drag", function() {});
-  
-  
+  });  
   
   (function transition() {
     d3.transition()
