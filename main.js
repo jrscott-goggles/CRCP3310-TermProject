@@ -82,6 +82,13 @@ function ready(error, world, names) {
 
 d3.select(self.frameElement).style("height", height + "px");
 
-d3.csv("data.csv", function(data) {
-  console.log(data);
+var dataset;
+
+d3.csv("data.csv", function(error, data) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log(data);
+    dataset = data;
+  }
 });
