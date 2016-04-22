@@ -90,5 +90,10 @@ d3.csv("data.csv", function(error, data) {
   } else {
     console.log(data);
     dataset = data;
+    d3.select("body").selectAll("p")
+      .data(dataset)
+      .enter()
+      .append("p")
+      .text(function(d) { return d.country_name; });
   }
 });
