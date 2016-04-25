@@ -22,9 +22,10 @@ var title = d3.select("h1");
 queue()
     .defer(d3.json, "data/world-110m.json")
     .defer(d3.tsv, "data/world-country-names.tsv")
+	.defer(d3.csv, "emissions.csv")
     .await(ready);
 	
-function ready(error, world, names) {
+function ready(error, world, names, emissions) {
   if (error) throw error;
 
   var globe = {type: "Sphere"},
@@ -60,7 +61,7 @@ function ready(error, world, names) {
   for (j = 0; j < n; j++) {
 	  colors.push();
   }*/
-  var color = d3.scale.category20();
+  //var color = d3.scale.category20();
 
   countries = countries.filter(function(d) {
     return names.some(function(n) {
@@ -71,6 +72,7 @@ function ready(error, world, names) {
   });  
   
   drawGlobe();
+  console.log(countries);
   d3.select("body").select('canvas').call(dragBehaviour);
   
   function drawGlobe() {
@@ -78,10 +80,25 @@ function ready(error, world, names) {
 	//c.fillStyle = "blue", c.beginPath(), path(land), c.fill(); //color of countries
 	var j;
 	for (j = 0; j < n; j++) {
-		c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
+		//c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
+		var countryColor;
+		var k;
+		for (k = 0; k < emissions.length; k++) {
+			if (countries[j].name == emissions[k].country_name) {
+				if (emissions[k].yr_1990 > 100000) {
+				  countryColor = "red";
+				} else if (emissions[k].yr_1990 < 100000 && emissions[k].yr_1990 > 10000) {
+				  countryColor = "black";
+				} else {
+				  countryColor = "green";
+				}
+				//console.log("good");
+			}
+		c.fillStyle = countryColor, c.beginPath(), path(countries[j]), c.fill();
+		}
 	}
-	c.fillStyle = "black", c.beginPath(), path(countries[i]), c.fill();  //selected country
-	c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
+	//c.fillStyle = "black", c.beginPath(), path(countries[i]), c.fill();  //selected country
+	c.strokeStyle = "#aaa", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
 	c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
 
   }
