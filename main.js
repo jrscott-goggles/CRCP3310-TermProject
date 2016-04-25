@@ -19,13 +19,11 @@ var path = d3.geo.path()
 
 var title = d3.select("h1");
 
-var drag = d3.behavior.drag();
-
 queue()
     .defer(d3.json, "data/world-110m.json")
     .defer(d3.tsv, "data/world-country-names.tsv")
     .await(ready);
-
+	
 function ready(error, world, names) {
   if (error) throw error;
 
@@ -35,8 +33,28 @@ function ready(error, world, names) {
       borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),
       i = -1,
       n = countries.length;
-	  
- 
+	
+	var dragBehaviour = d3.behavior.drag()
+	.on('drag', function(){
+		var dx = d3.event.dx;
+		var dy = d3.event.dy;
+
+		var rotation = projection.rotate();
+		var radius = projection.scale();
+		var scale = d3.scale.linear()
+			.domain([-1 * radius, radius])
+			.range([-90, 90]);
+		var degX = scale(dx);
+		var degY = scale(dy);
+		rotation[0] += degX;
+		rotation[1] -= degY;
+		if (rotation[1] > 90)   rotation[1] = 90;
+		if (rotation[1] < -90)  rotation[1] = -90;
+
+		if (rotation[0] >= 180) rotation[0] -= 360;
+		projection.rotate(rotation);
+		drawGlobe();
+	}) 
   /*var colors = [];
   var j;
   for (j = 0; j < n; j++) {
@@ -52,32 +70,21 @@ function ready(error, world, names) {
     return a.name.localeCompare(b.name);
   });  
   
-  (function transition() {
-    d3.transition()
-        .duration(125000)
-        .each("start", function() {
-          title.text(countries[i = 1].name);
-		  //title.text(countries[i = (i + 1) % n].name);
-        })
-        .tween("rotate", function() {
-          var p = d3.geo.centroid(countries[i]), //p = current country
-              r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]); //how it rotates
-          return function(t) {
-            projection.rotate(r(t));
-            c.clearRect(0, 0, width, height);
-            //c.fillStyle = "blue", c.beginPath(), path(land), c.fill(); //color of countries
-			var j;
-			for (j = 0; j < n; j++) {
-				c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
-			}
-            c.fillStyle = "black", c.beginPath(), path(countries[i]), c.fill();  //selected country
-            c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
-            c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
-          };
-        })
-      .transition()
-        .each("end", transition);
-  })();
+  drawGlobe();
+  d3.select("body").select('canvas').call(dragBehaviour);
+  
+  function drawGlobe() {
+	c.clearRect(0, 0, width, height);
+	//c.fillStyle = "blue", c.beginPath(), path(land), c.fill(); //color of countries
+	var j;
+	for (j = 0; j < n; j++) {
+		c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
+	}
+	c.fillStyle = "black", c.beginPath(), path(countries[i]), c.fill();  //selected country
+	c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
+	c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
+
+  }
 }
 
 d3.select(self.frameElement).style("height", height + "px");
@@ -88,7 +95,7 @@ d3.csv("emissions.csv", function(error, data) {
   if (error) {
     console.log(error);
   } else {
-    console.log(data);
+    //console.log(data);
     dataset = data;
     d3.select("body").selectAll("p")
       .data(dataset)
