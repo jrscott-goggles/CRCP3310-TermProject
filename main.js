@@ -81,19 +81,22 @@ function ready(error, world, names, emissions) {
 	var j;
 	for (j = 0; j < n; j++) {
 		//c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
-		var countryColor;
+		var countryColor = d3.rgb(192, 192, 192);
 		var k;
 		for (k = 0; k < emissions.length; k++) {
 			if (countries[j].name == emissions[k].country_name) {
-				if (emissions[k].yr_1990 > 100000) {
-				  countryColor = "red";
-				} else if (emissions[k].yr_1990 < 100000 && emissions[k].yr_1990 > 10000) {
-				  countryColor = "black";
-				} else {
-				  countryColor = "green";
-				}
-				//console.log("good");
-			}
+				if (emissions[k].yr_1990 > 50000) {
+				  countryColor = d3.rgb(204, 51, 0);
+				} else if (emissions[k].yr_1990 < 50000 && emissions[k].yr_1990 > 10000) {
+				  countryColor = d3.rgb(255, 102, 0);
+				} else if (emissions[k].yr_1990 < 10000 && emissions[k].yr_1990 > 2000) {
+				  countryColor = d3.rgb(255, 153, 0);
+				} else if (emissions[k].yr_1990 < 2000 && emissions[k].yr_1990 > 400) {
+          countryColor = d3.rgb(255, 204, 0);
+        } else {
+          countryColor = d3.rgb(255, 255, 153);
+        }
+      }
 		c.fillStyle = countryColor, c.beginPath(), path(countries[j]), c.fill();
 		}
 	}
