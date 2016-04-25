@@ -84,7 +84,7 @@ d3.select(self.frameElement).style("height", height + "px");
 
 var dataset;
 
-d3.csv("data.csv", function(error, data) {
+d3.csv("emissions.csv", function(error, data) {
   if (error) {
     console.log(error);
   } else {
@@ -94,6 +94,17 @@ d3.csv("data.csv", function(error, data) {
       .data(dataset)
       .enter()
       .append("p")
-      .text(function(d) { return d.country_name; });
+      .style("color", function(d) {
+        if (d.yr_1990 > 100000) {
+          return "red";
+        } else if (d.yr_1990 < 100000 && d.yr_1990 > 10000) {
+          return "black";
+        } else {
+          return "green";
+        }
+      })
+      .text(function(d) { 
+        return d.country_name + " had " + d.yr_1990 + " kt of emissions in 1990.";
+      })
   }
 });
