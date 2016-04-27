@@ -21,11 +21,10 @@ var title = d3.select("h1");
 
 queue()
     .defer(d3.json, "data/world-110m.json")
-    .defer(d3.tsv, "data/world-country-names.tsv")
-	.defer(d3.csv, "emissions.csv")
+    .defer(d3.csv, "data/filteredData.csv")
     .await(ready);
 	
-function ready(error, world, names, emissions) {
+function ready(error, world, names) {
   if (error) throw error;
 
   var globe = {type: "Sphere"},
@@ -61,7 +60,7 @@ function ready(error, world, names, emissions) {
   for (j = 0; j < n; j++) {
 	  colors.push();
   }*/
-  //var color = d3.scale.category20();
+  var color = d3.scale.category20();
 
   countries = countries.filter(function(d) {
     return names.some(function(n) {
@@ -72,33 +71,28 @@ function ready(error, world, names, emissions) {
   });  
   
   drawGlobe();
-  console.log(countries);
   d3.select("body").select('canvas').call(dragBehaviour);
   
   function drawGlobe() {
 	c.clearRect(0, 0, width, height);
 	//c.fillStyle = "blue", c.beginPath(), path(land), c.fill(); //color of countries
+	//c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
 	var j;
 	for (j = 0; j < n; j++) {
-		//c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
+		c.fillStyle = color(j%20), c.beginPath(), path(countries[j]), c.fill();
 		var countryColor = d3.rgb(192, 192, 192);
-		var k;
-		for (k = 0; k < emissions.length; k++) {
-			if (countries[j].name == emissions[k].country_name) {
-				if (emissions[k].yr_1990 > 50000) {
-				  countryColor = d3.rgb(204, 51, 0);
-				} else if (emissions[k].yr_1990 < 50000 && emissions[k].yr_1990 > 10000) {
-				  countryColor = d3.rgb(255, 102, 0);
-				} else if (emissions[k].yr_1990 < 10000 && emissions[k].yr_1990 > 2000) {
-				  countryColor = d3.rgb(255, 153, 0);
-				} else if (emissions[k].yr_1990 < 2000 && emissions[k].yr_1990 > 400) {
-          countryColor = d3.rgb(255, 204, 0);
-        } else {
-          countryColor = d3.rgb(255, 255, 153);
-        }
-      }
-		c.fillStyle = countryColor, c.beginPath(), path(countries[j]), c.fill();
+		if (names[j].yr_1990 > 50000) {
+		  countryColor = d3.rgb(204, 51, 0);
+		} else if (names[j].yr_1990 < 50000 && names[j].yr_1990 > 10000) {
+		  countryColor = d3.rgb(255, 102, 0);
+		} else if (names[j].yr_1990 < 10000 && names[j].yr_1990 > 2000) {
+		  countryColor = d3.rgb(255, 153, 0);
+		} else if (names[j].yr_1990 < 2000 && names[j].yr_1990 > 400) {
+			countryColor = d3.rgb(255, 204, 0);
+		} else {
+			countryColor = d3.rgb(255, 255, 153);
 		}
+		c.fillStyle = countryColor, c.beginPath(), path(countries[j]), c.fill();
 	}
 	//c.fillStyle = "black", c.beginPath(), path(countries[i]), c.fill();  //selected country
 	c.strokeStyle = "#aaa", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
@@ -111,7 +105,7 @@ d3.select(self.frameElement).style("height", height + "px");
 
 var dataset;
 
-d3.csv("emissions.csv", function(error, data) {
+d3.csv("data/emissions.csv", function(error, data) {
   if (error) {
     console.log(error);
   } else {
