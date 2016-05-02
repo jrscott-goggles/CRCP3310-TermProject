@@ -34,10 +34,9 @@ function ready(error, world, names) {
 		countries = topojson.feature(world, world.objects.countries).features,
 		borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),
 		n = countries.length,
-		countryById = [];
+		selectedCountry;
 	
 	names.forEach(function(d) {
-		countryById[d.id] = d.name;
 		option = countryList.append("option");
 		option.text(d.name);
 		option.property("value", d.id);
@@ -84,6 +83,11 @@ function ready(error, world, names) {
 
 	drawGlobe();
 	d3.select("body").select('canvas').call(dragBehaviour);
+	d3.select("select").on("change", function() {
+		var selectedValue = d3.select("select").property("value");
+		selectedCountry = getCountry(sorted_names, selectedValue);
+		drawGlobe();
+	});
 
 	function drawGlobe() {
 		c.clearRect(0, 0, width, height);
@@ -102,9 +106,22 @@ function ready(error, world, names) {
 				countryColor = d3.rgb(255, 255, 153);
 			}
 			c.fillStyle = countryColor, c.beginPath(), path(countries[j]), c.fill();
+			if (selectedCountry == sorted_names[j].id) {
+				c.strokeStyle = "#0AA", c.lineWidth = 5, c.beginPath(), path(countries[j]), c.stroke();
+			}
 		}
-		c.strokeStyle = "#00", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
+		c.strokeStyle = "#000", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
 		c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
+	}
+	
+	function getCountry(list, selection) {
+		var i;
+		for(i = 0; i < list.length; i++) {
+			if(list[i].id == selection) {
+				var result = list[i].id;
+				return result;
+			}
+		}
 	}
 }
 
