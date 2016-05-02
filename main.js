@@ -1,7 +1,10 @@
 var width = 960,
 	height = 960;
 
-var countryList = d3.select("body").append("select").attr("name", "countries");
+var countryList = d3.select("body").append("select").attr("name", "countries"),
+	yearChoice = d3.select("body").append("select").attr("name", "year");
+	
+	yearChoice.appe
 	
 var projection = d3.geo.orthographic()
 	.translate([width / 2, height / 2])
@@ -18,8 +21,6 @@ var c = canvas.node().getContext("2d");
 var path = d3.geo.path()
 	.projection(projection)
 	.context(c);
-
-var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
 queue()
 	.defer(d3.json, "data/world-110m.json")
@@ -84,7 +85,7 @@ function ready(error, world, names) {
 	drawGlobe();
 	d3.select("body").select('canvas').call(dragBehaviour);
 	d3.select("select").on("change", function() {
-		var selectedValue = d3.select("select").property("value");
+		var selectedValue = countryList.property("value");
 		selectedCountry = getCountry(sorted_names, selectedValue);
 		drawGlobe();
 	});
@@ -94,16 +95,18 @@ function ready(error, world, names) {
 		var j;
 		for (j = 0; j < n; j++) {
 			var countryColor = d3.rgb(192, 192, 192);
-			if (sorted_names[j].yr_1990 > 50000) {
+			if (sorted_names[j].yr_1990 >= 50000) {
 				countryColor = d3.rgb(204, 51, 0);
-			} else if (sorted_names[j].yr_1990 < 50000 && sorted_names[j].yr_1990 > 10000) {
+			} else if (sorted_names[j].yr_1990 < 50000 && sorted_names[j].yr_1990 >= 10000) {
 				countryColor = d3.rgb(255, 102, 0);
-			} else if (sorted_names[j].yr_1990 < 10000 && sorted_names[j].yr_1990 > 2000) {
+			} else if (sorted_names[j].yr_1990 < 10000 && sorted_names[j].yr_1990 >= 2000) {
 				countryColor = d3.rgb(255, 153, 0);
-			} else if (sorted_names[j].yr_1990 < 2000 && sorted_names[j].yr_1990 > 400) {
+			} else if (sorted_names[j].yr_1990 < 2000 && sorted_names[j].yr_1990 >= 400) {
 				countryColor = d3.rgb(255, 204, 0);
-			} else {
+			} else if (sorted_names[j].yr_1990 < 400 && sorted_names[j].yr_1990 >= 0) {
 				countryColor = d3.rgb(255, 255, 153);
+			} else {
+				countryColor = d3.rgb(192, 192, 192);
 			}
 			c.fillStyle = countryColor, c.beginPath(), path(countries[j]), c.fill();
 			if (selectedCountry == sorted_names[j].id) {
