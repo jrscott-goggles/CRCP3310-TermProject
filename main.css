@@ -1,14 +1,19 @@
 body {
-  background: #fcfcfa;
-  background-color: #9999FF;
-  font-family: 'comic sans ms', sans-serif;
+	background: #F0F0F0;
 }
 
 h1 {
-  position: absolute;
-  top: 500px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 18px;
-  text-align: center;
-  width: 960px;
+	top: 500px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 40px;
+	text-align: center;
+	width: 960px;
+}
+
+text {
+	font-size: 18px;
+}
+
+select {
+	font-size: 18px;
 }
