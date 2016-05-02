@@ -1,10 +1,8 @@
 var width = 960,
 	height = 960;
 
-var countryList = d3.select("body").append("select").attr("name", "countries"),
-	yearChoice = d3.select("body").append("select").attr("name", "year");
-	
-	yearChoice.appe
+var countryList = d3.select("#countries");
+	yearChoice = d3.select("#years");	
 	
 var projection = d3.geo.orthographic()
 	.translate([width / 2, height / 2])
@@ -35,7 +33,8 @@ function ready(error, world, names) {
 		countries = topojson.feature(world, world.objects.countries).features,
 		borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),
 		n = countries.length,
-		selectedCountry;
+		selectedCountry,
+		selectedYear = "yr_1990";
 	
 	names.forEach(function(d) {
 		option = countryList.append("option");
@@ -89,21 +88,25 @@ function ready(error, world, names) {
 		selectedCountry = getCountry(sorted_names, selectedValue);
 		drawGlobe();
 	});
-
+	d3.select("#years").on("change", function() {
+		selectedYear = yearChoice.property("value");
+		drawGlobe();
+	});
+	
 	function drawGlobe() {
 		c.clearRect(0, 0, width, height);
 		var j;
 		for (j = 0; j < n; j++) {
 			var countryColor = d3.rgb(192, 192, 192);
-			if (sorted_names[j].yr_1990 >= 50000) {
+			if (sorted_names[j][selectedYear] >= 50000) {
 				countryColor = d3.rgb(204, 51, 0);
-			} else if (sorted_names[j].yr_1990 < 50000 && sorted_names[j].yr_1990 >= 10000) {
+			} else if (sorted_names[j][selectedYear] < 50000 && sorted_names[j][selectedYear] >= 10000) {
 				countryColor = d3.rgb(255, 102, 0);
-			} else if (sorted_names[j].yr_1990 < 10000 && sorted_names[j].yr_1990 >= 2000) {
+			} else if (sorted_names[j][selectedYear] < 10000 && sorted_names[j][selectedYear] >= 2000) {
 				countryColor = d3.rgb(255, 153, 0);
-			} else if (sorted_names[j].yr_1990 < 2000 && sorted_names[j].yr_1990 >= 400) {
+			} else if (sorted_names[j][selectedYear] < 2000 && sorted_names[j][selectedYear] >= 400) {
 				countryColor = d3.rgb(255, 204, 0);
-			} else if (sorted_names[j].yr_1990 < 400 && sorted_names[j].yr_1990 >= 0) {
+			} else if (sorted_names[j][selectedYear] < 400 && sorted_names[j][selectedYear] >= 0) {
 				countryColor = d3.rgb(255, 255, 153);
 			} else {
 				countryColor = d3.rgb(192, 192, 192);
