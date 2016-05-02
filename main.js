@@ -1,6 +1,8 @@
 var width = 960,
 	height = 960;
 
+var countryList = d3.select("body").append("select").attr("name", "countries");
+	
 var projection = d3.geo.orthographic()
 	.translate([width / 2, height / 2])
 	.scale(width / 2 - 20)
@@ -17,7 +19,7 @@ var path = d3.geo.path()
 	.projection(projection)
 	.context(c);
 
-var title = d3.select("h1");
+var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
 queue()
 	.defer(d3.json, "data/world-110m.json")
@@ -31,7 +33,15 @@ function ready(error, world, names) {
 		land = topojson.feature(world, world.objects.land),
 		countries = topojson.feature(world, world.objects.countries).features,
 		borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),
-		n = countries.length;
+		n = countries.length,
+		countryById = [];
+	
+	names.forEach(function(d) {
+		countryById[d.id] = d.name;
+		option = countryList.append("option");
+		option.text(d.name);
+		option.property("value", d.id);
+	});
 
 	var dragBehaviour = d3.behavior.drag()
 		.on('drag', function(){
@@ -71,7 +81,6 @@ function ready(error, world, names) {
 			sorted_names.push({id: current_id, name: "", yr_1990: "",yr_2000: "", yr_2006: "", yr_2007: "", yr_2008: "", yr_2009: "", yr_2010: "", yr_2011: ""});
 		}
 	}
-
 
 	drawGlobe();
 	d3.select("body").select('canvas').call(dragBehaviour);
